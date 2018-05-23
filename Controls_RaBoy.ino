@@ -1,7 +1,5 @@
 #include <Joystick.h>
 
-// Create the Joystick
-Joystick_ Joystick;
 
 int xPin = A0;                   // Joystick X Analog Pin
 int yPin = A1;                   // Joystick Y Analog Pin

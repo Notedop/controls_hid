@@ -6,7 +6,10 @@ Joystick_ Joystick;
 int xPin = A0;                   // Joystick X Analog Pin
 int yPin = A1;                   // Joystick Y Analog Pin
 
-int ButtonPins[] = {2,3,4,5,6,7,8,9,10,16,14,15,A0,A1,A2,A3}; //These pins will be threated as input pins for buttons. The position within the array defines the button number. i.e. first pin in array will be button #1
+//These pins will be threated as input pins for buttons. The position within the array defines the button number. i.e. first pin in array will be button #1
+int buttonPins[] = {2,3,4,5,6,7,8,9,10,16,14,15,A0,A1,A2,A3}; 
+//Array to hold current state of button
+int previousButtonState[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; //
 
 int defaultX;                    //used for calibration
 int defaultY;                    //used for calibration
@@ -23,8 +26,8 @@ void setup() {
   Joystick.begin();
   
   //loop through defined button pins and assign pinmode
-  for (i = 0; i < (sizeof(ButtonPins)/sizeof(ButtonPins[i])); i++) {
-    pinMode(ButtonPins[i], INPUT_PULLUP);
+  for (i = 0; i < (sizeof(buttonPins)/sizeof(buttonPins[i])); i++) {
+    pinMode(buttonPins[i], INPUT_PULLUP);
     //Serial.print(i);
   }
 
@@ -67,28 +70,36 @@ void loop() {
   }
 */
   
-  delay(10);
   
   //loop through all buttons and set correct passthrough current state
-  for (i = 0; i < (sizeof(ButtonPins)/sizeof(ButtonPins[i])); i++) {
-      ButtonHandler(ButtonPins[i], i);
+  for (i = 0; i < (sizeof(buttonPins)/sizeof(buttonPins[i])); i++) {
+      ButtonHandler(buttonPins[i], i);
   }
   
-  delay(10);
+  delay(50);
 
 }
 
-void ButtonHandler (int Pin, int ButtonNumber) {
-  
-  if ( digitalRead(Pin) == HIGH) {
-    //button not pressed
-    Joystick.releaseButton(ButtonNumber);
-  } else {
-    //button pressed
-    Joystick.pressButton(ButtonNumber);
-    Serial.print("Button pressed: ");
-    Serial.print(ButtonNumber);
-  };
+void ButtonHandler (int Pin, int buttonNumber) {
 
+  int currentButtonState = !digitalRead(Pin);
+  
+  if ( currentButtonState!= previousButtonState[buttonNumber]) {
+    //Send state and update previous state
+    Joystick.setButton(buttonNumber, currentButtonState);
+    previousButtonState[buttonNumber] = currentButtonState;
+    
+    Serial.print("State ");
+    Serial.print(previousButtonState[buttonNumber]); 
+    Serial.print(" changed for button ");
+    Serial.print(buttonNumber); 
+    Serial.print(" to "); 
+    Serial.println(currentButtonState);  
+  } else {
+    Serial.print("State ");
+    Serial.print(currentButtonState); 
+    Serial.print("not changed for button ");
+    Serial.println(buttonNumber); 
+     };
 }
 

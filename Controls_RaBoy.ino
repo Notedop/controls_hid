@@ -2,7 +2,7 @@
 #include <Joystick.h>
 
 const int wakePin = 2;                                                                          //Pin used for waking up. Should be pin 2 or 3!
-const int secondsTillSleep = 60;                                                                //Specifies the time which needs to pass without button press untill controller goes to sleep
+const long secondsTillSleep = 60;                                                                //Specifies the time which needs to pass without button press untill controller goes to sleep
 const int buttonPins[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 16, 14, 15, A0, A1, A2, A3};              //These pins will be threated as input pins for buttons. The position within the array defines the button number. i.e. first pin in array will be button #1
 int previousButtonState[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; //Array to hold current state of button
 
@@ -73,8 +73,13 @@ void loop()
 {
 
   unsigned long currentMillis = millis();
+  Serial.print("Check difference");
+  Serial.println(currentMillis - previousMillis1);
+  Serial.print("Check goal");
+  Serial.println((secondsTillSleep*1000));
 
-  if (currentMillis - previousMillis1 >= (secondsTillSleep*1000)) {
+  
+  if ((currentMillis - previousMillis1) >= (secondsTillSleep*1000)) {
     Serial.println("Timer: Entering Sleep mode");
     delay(100); // this delay is needed, the sleep
     //function will provoke a Serial error otherwise!!

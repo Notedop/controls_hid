@@ -5,3 +5,5 @@ Code is written for usage with arduino leonardo which has USB interface. After x
 TODO: Comment out Serial to save more power. 
 TODO: Add variable for setting time_till_powerdown 
 TODO: Remove unneeded bits of code/comments
+
+this is a test
